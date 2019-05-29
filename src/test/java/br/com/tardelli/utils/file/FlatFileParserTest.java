@@ -21,8 +21,8 @@ public class FlatFileParserTest {
   }
 
   @Test(expected = NumberFormatException.class)
-  public void convertFileToObjectsWith() {
-    flatFileParser.convertFileToObjects(mockFileWith());
+  public void convertFileToObjectsWithNumberFormatException() {
+    flatFileParser.convertFileToObjects(mockFileWithNumberFormatException());
   }
 
   @Test
@@ -53,7 +53,7 @@ public class FlatFileParserTest {
     return new BufferedReader(inputString);
   }
 
-  private BufferedReader mockFileWith() {
+  private BufferedReader mockFileWithNumberFormatException() {
     String str = "23:49:08.277      038 – F.MASSA                           1     1:02.852                        44,sdf\n";
     Reader inputString = new StringReader(str);
     return new BufferedReader(inputString);
