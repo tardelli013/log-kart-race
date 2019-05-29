@@ -20,7 +20,7 @@ public class KartRaceService {
     List<LogLapDTO> finalLaps = getListFinalLap(allLapsByPilot);
 
     calcArrivalDifference(finalLaps);
-    findBestRoundByPilot(finalLaps, listLogs);
+    findBestLapByPilot(finalLaps, listLogs);
     calcAverageSpeedyInRace(finalLaps, listLogs);
     calcTotalTimeRace(finalLaps, listLogs);
 
@@ -85,31 +85,31 @@ public class KartRaceService {
     BigDecimal sumSpeed;
     for (LogLapDTO lastLap : listFinalLap) {
       sumSpeed = new BigDecimal(0);
-      int totalRounds = 0;
+      int totalLaps = 0;
 
       for (LogLapDTO lap : listLogs) {
         if (lap.getPilotId().equals(lastLap.getPilotId())) {
-          totalRounds ++;
+          totalLaps ++;
           sumSpeed = sumSpeed.add(lap.getAverageSpeed());
         }
       }
-      sumSpeed = sumSpeed.divide(new BigDecimal(totalRounds), 3, RoundingMode.HALF_UP);
+      sumSpeed = sumSpeed.divide(new BigDecimal(totalLaps), 3, RoundingMode.HALF_UP);
       lastLap.setAverageRaceSpeedy(sumSpeed);
     }
   }
 
-  private void findBestRoundByPilot(List<LogLapDTO> listFinalLap, List<LogLapDTO> listLogs) {
+  private void findBestLapByPilot(List<LogLapDTO> listFinalLap, List<LogLapDTO> listLogs) {
     listFinalLap.forEach(finish -> {
       LocalTime best = null;
 
-      for (LogLapDTO round : listLogs) {
+      for (LogLapDTO lap : listLogs) {
 
-        if (round.getPilotId().equals(finish.getPilotId())) {
+        if (lap.getPilotId().equals(finish.getPilotId())) {
           if (best == null) {
-            best = round.getLapTime();
+            best = lap.getLapTime();
           } else {
-            if (best.compareTo(round.getLapTime()) > 0) {
-              best = round.getLapTime();
+            if (best.compareTo(lap.getLapTime()) > 0) {
+              best = lap.getLapTime();
             }
           }
         }
@@ -135,20 +135,20 @@ public class KartRaceService {
 
   public LogLapDTO findBestLapRace(List<LogLapDTO> listFinalLap) {
     LocalTime best = null;
-    LogLapDTO bestRound = null;
+    LogLapDTO bestLap = null;
 
     for (LogLapDTO lap : listFinalLap) {
 
       if (best == null) {
         best = lap.getLapTime();
-        bestRound = lap;
+        bestLap = lap;
       } else {
         if (best.compareTo(lap.getLapTime()) > 0) {
           best = lap.getLapTime();
-          bestRound = lap;
+          bestLap = lap;
         }
       }
     }
-    return bestRound;
+    return bestLap;
   }
 }
