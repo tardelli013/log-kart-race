@@ -12,8 +12,6 @@ import static br.com.tardelli.utils.FunctionsUtils.*;
 
 public class KartRaceService {
 
-  private static final String HOUR_PATTERN = "HH:mm:ss.SSS";
-
   public List<LogLapDTO> buildGridFinal(List<LogLapDTO> listLogs) {
 
     Map<String, List<LogLapDTO>> allLapsByPilot = getLapsByPilot(listLogs);
