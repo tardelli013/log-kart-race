@@ -1,23 +1,14 @@
-package br.com.tardelli.dto;
-
-import br.com.tardelli.utils.file.PositionalField;
+package br.com.tardelli.model;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
 
-public class LogLapDTO {
+public class LogLap {
 
-  @PositionalField(initialPosition = 1, finalPosition = 13, pattern = "HH:mm:ss.SSS")
   private LocalTime hourLog;
-  @PositionalField(initialPosition = 19, finalPosition = 22)
-  private String pilotId;
-  @PositionalField(initialPosition = 25, finalPosition = 40)
-  private String pilotName;
-  @PositionalField(initialPosition = 59, finalPosition = 60)
+  private Pilot pilot;
   private Integer lapNumber;
-  @PositionalField(initialPosition = 65, finalPosition = 73, pattern = "HH:mm:ss.SSS")
   private LocalTime lapTime;
-  @PositionalField(initialPosition = 97, finalPosition = 102)
   private BigDecimal averageSpeed;
 
   private String hourFinishRace;
@@ -25,28 +16,20 @@ public class LogLapDTO {
   private BigDecimal averageRaceSpeedy;
   private String totalTimeRace;
 
+  public Pilot getPilot() {
+    return pilot;
+  }
+
+  public void setPilot(Pilot pilot) {
+    this.pilot = pilot;
+  }
+
   public LocalTime getHourLog() {
     return hourLog;
   }
 
   public void setHourLog(LocalTime hourLog) {
     this.hourLog = hourLog;
-  }
-
-  public String getPilotId() {
-    return pilotId;
-  }
-
-  public void setPilotId(String pilotId) {
-    this.pilotId = pilotId;
-  }
-
-  public String getPilotName() {
-    return pilotName;
-  }
-
-  public void setPilotName(String pilotName) {
-    this.pilotName = pilotName;
   }
 
   public Integer getLapNumber() {
@@ -107,7 +90,7 @@ public class LogLapDTO {
 
   @Override
   public String toString() {
-    return pilotId + "-" + pilotName + " " + lapNumber + " voltas completas    Tempo total: " + totalTimeRace
+    return pilot.getId() + "-" + pilot.getName() + " " + lapNumber + " voltas completas    Tempo total: " + totalTimeRace
             + "    Melhor volta: " + bestLap + "    Vel. Média: " + averageRaceSpeedy + "    Termino: " + (hourFinishRace == null ? "" : hourFinishRace);
   }
 }

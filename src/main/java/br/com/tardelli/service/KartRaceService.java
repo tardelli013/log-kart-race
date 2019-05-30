@@ -1,6 +1,6 @@
 package br.com.tardelli.service;
 
-import br.com.tardelli.dto.LogLapDTO;
+import br.com.tardelli.model.LogLap;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -12,10 +12,10 @@ import static br.com.tardelli.utils.FunctionsUtils.*;
 
 public class KartRaceService {
 
-  public List<LogLapDTO> buildGridFinal(List<LogLapDTO> listLogs) {
+  public List<LogLap> buildGridFinal(List<LogLap> listLogs) {
 
-    Map<String, List<LogLapDTO>> allLapsByPilot = getLapsByPilot(listLogs);
-    List<LogLapDTO> finalLaps = getListFinalLap(allLapsByPilot);
+    Map<String, List<LogLap>> allLapsByPilot = getLapsByPilot(listLogs);
+    List<LogLap> finalLaps = getListFinalLap(allLapsByPilot);
 
     calcArrivalDifference(finalLaps);
     findBestLapByPilot(finalLaps, listLogs);
@@ -25,11 +25,11 @@ public class KartRaceService {
     return finalLaps;
   }
 
-  private List<LogLapDTO> getListFinalLap(Map<String, List<LogLapDTO>> allLapsByPilot) {
-    List<LogLapDTO> finalLaps = new ArrayList<>();
+  private List<LogLap> getListFinalLap(Map<String, List<LogLap>> allLapsByPilot) {
+    List<LogLap> finalLaps = new ArrayList<>();
     allLapsByPilot.forEach((s, laps) -> {
 
-      laps.sort(Comparator.comparingInt(LogLapDTO::getLapNumber).reversed());
+      laps.sort(Comparator.comparingInt(LogLap::getLapNumber).reversed());
 
       finalLaps.add(laps.get(0));
     });
@@ -44,27 +44,27 @@ public class KartRaceService {
     return finalLaps;
   }
 
-  private Map<String, List<LogLapDTO>> getLapsByPilot(List<LogLapDTO> listLogs) {
-    Map<String, List<LogLapDTO>> map = new HashMap<>();
+  private Map<String, List<LogLap>> getLapsByPilot(List<LogLap> listLogs) {
+    Map<String, List<LogLap>> map = new HashMap<>();
     Set<String> idPilots = new LinkedHashSet<>();
 
-    listLogs.forEach(logLap -> idPilots.add(logLap.getPilotId()));
+    listLogs.forEach(logLap -> idPilots.add(logLap.getPilot().getId()));
 
-    idPilots.forEach(id -> map.put(id, listLogs.stream().filter(obj -> id.equals(obj.getPilotId())).collect(Collectors.toList())));
+    idPilots.forEach(id -> map.put(id, listLogs.stream().filter(obj -> id.equals(obj.getPilot().getId())).collect(Collectors.toList())));
 
     return map;
   }
 
 
-  private void calcTotalTimeRace(List<LogLapDTO> listFinalLap, List<LogLapDTO> listLogs) {
+  private void calcTotalTimeRace(List<LogLap> listFinalLap, List<LogLap> listLogs) {
     LocalTime timeStart = null;
     LocalTime timeFinish = null;
 
-    for (LogLapDTO finish : listFinalLap) {
+    for (LogLap finish : listFinalLap) {
 
-      for (LogLapDTO lap : listLogs) {
+      for (LogLap lap : listLogs) {
 
-        if (lap.getPilotId().equals(finish.getPilotId())) {
+        if (lap.getPilot().getId().equals(finish.getPilot().getId())) {
           if (lap.getLapNumber().equals(1)) {
             timeStart = convertHoursStringToLocalTime(subtractHoursInLocalTime(lap.getLapTime(), lap.getHourLog()));
           } else if (lap.getLapNumber().equals(4)) {
@@ -79,14 +79,14 @@ public class KartRaceService {
     }
   }
 
-  private void calcAverageSpeedyInRace(List<LogLapDTO> listFinalLap, List<LogLapDTO> listLogs) {
+  private void calcAverageSpeedyInRace(List<LogLap> listFinalLap, List<LogLap> listLogs) {
     BigDecimal sumSpeed;
-    for (LogLapDTO lastLap : listFinalLap) {
+    for (LogLap lastLap : listFinalLap) {
       sumSpeed = new BigDecimal(0);
       int totalLaps = 0;
 
-      for (LogLapDTO lap : listLogs) {
-        if (lap.getPilotId().equals(lastLap.getPilotId())) {
+      for (LogLap lap : listLogs) {
+        if (lap.getPilot().getId().equals(lastLap.getPilot().getId())) {
           totalLaps ++;
           sumSpeed = sumSpeed.add(lap.getAverageSpeed());
         }
@@ -96,13 +96,13 @@ public class KartRaceService {
     }
   }
 
-  private void findBestLapByPilot(List<LogLapDTO> listFinalLap, List<LogLapDTO> listLogs) {
+  private void findBestLapByPilot(List<LogLap> listFinalLap, List<LogLap> listLogs) {
     listFinalLap.forEach(finish -> {
       LocalTime best = null;
 
-      for (LogLapDTO lap : listLogs) {
+      for (LogLap lap : listLogs) {
 
-        if (lap.getPilotId().equals(finish.getPilotId())) {
+        if (lap.getPilot().getId().equals(finish.getPilot().getId())) {
           if (best == null) {
             best = lap.getLapTime();
           } else {
@@ -116,7 +116,7 @@ public class KartRaceService {
     });
   }
 
-  private void calcArrivalDifference(List<LogLapDTO> listFinalLap) {
+  private void calcArrivalDifference(List<LogLap> listFinalLap) {
     LocalTime hourChampion = null;
 
     for (int i = 0; i < listFinalLap.size(); i++) {
@@ -131,11 +131,11 @@ public class KartRaceService {
     }
   }
 
-  public LogLapDTO findBestLapRace(List<LogLapDTO> listFinalLap) {
+  public LogLap findBestLapRace(List<LogLap> listFinalLap) {
     LocalTime best = null;
-    LogLapDTO bestLap = null;
+    LogLap bestLap = null;
 
-    for (LogLapDTO lap : listFinalLap) {
+    for (LogLap lap : listFinalLap) {
 
       if (best == null) {
         best = lap.getLapTime();

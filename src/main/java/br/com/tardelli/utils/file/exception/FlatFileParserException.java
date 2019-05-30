@@ -6,4 +6,8 @@ public class FlatFileParserException extends RuntimeException {
     super(message, cause);
   }
 
+  public FlatFileParserException(String message) {
+    super(message);
+  }
+
 }

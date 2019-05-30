@@ -1,6 +1,6 @@
 package br.com.tardelli;
 
-import br.com.tardelli.dto.LogLapDTO;
+import br.com.tardelli.model.LogLap;
 import br.com.tardelli.service.KartRaceService;
 import br.com.tardelli.utils.file.FlatFileParser;
 
@@ -12,22 +12,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class KartRaceMain {
 
   private static KartRaceService kartRaceService = new KartRaceService();
+  private static FlatFileParser flatFileParser = new FlatFileParser();
 
   @SuppressWarnings("ConstantConditions")
   public static void main(String[] args) {
     BufferedReader fileLogs = new BufferedReader(new InputStreamReader(KartRaceMain.class.getClassLoader().getResourceAsStream("logs")));
 
-    FlatFileParser fileParser = new FlatFileParser();
 
-    List<LogLapDTO> logLaps = fileParser.convertFileToObjects(fileLogs);
+    List<LogLap> logLaps = flatFileParser.fileToObject(fileLogs);
 
-    List<LogLapDTO> finalGrid = kartRaceService.buildGridFinal(logLaps);
-    LogLapDTO bestLapRace = kartRaceService.findBestLapRace(finalGrid);
+    List<LogLap> finalGrid = kartRaceService.buildGridFinal(logLaps);
+    LogLap bestLapRace = kartRaceService.findBestLapRace(finalGrid);
 
     printResult(finalGrid, bestLapRace);
   }
 
-  private static void printResult(List<LogLapDTO> finalGrid, LogLapDTO bestRoundRace) {
+  private static void printResult(List<LogLap> finalGrid, LogLap bestRoundRace) {
     System.out.println("\n*** RESULTADO FINAL *** \n");
     AtomicInteger position = new AtomicInteger(1);
     finalGrid.forEach(logLapDTO -> {
@@ -36,6 +36,6 @@ public class KartRaceMain {
     });
 
     System.out.println("\n*** MELHOR VOLTA DA CORRIDA ***");
-    System.out.println(bestRoundRace.getPilotId().concat("-").concat(bestRoundRace.getPilotName()).concat(" Tempo: ") + bestRoundRace.getBestLap() + "     Vel. média: " + bestRoundRace.getAverageSpeed());
+    System.out.println(bestRoundRace.getPilot().getId().concat("-").concat(bestRoundRace.getPilot().getName()).concat(" Tempo: ") + bestRoundRace.getBestLap() + "     Vel. média: " + bestRoundRace.getAverageSpeed());
   }
 }

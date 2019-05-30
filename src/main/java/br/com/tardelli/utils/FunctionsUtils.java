@@ -34,7 +34,6 @@ public class FunctionsUtils implements Serializable {
 
   public static String subtractHoursInLocalTime(LocalTime cal1, LocalTime cal2) {
     long nano = ChronoUnit.NANOS.between(cal1, cal2);
-
     LocalTime ts = LocalTime.ofNanoOfDay(nano);
 
     return convertLocalTimeToHoursString(ts);
