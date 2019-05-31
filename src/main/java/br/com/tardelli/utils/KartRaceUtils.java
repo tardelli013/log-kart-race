@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class KartRaceUtils {
 
-  private static final DateTimeFormatter HOUR_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+  public static final DateTimeFormatter HOUR_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
 
   public static SortedSet<LogLap> getAllFinalLapsOrderByHourLogAsc(Map<String, SortedSet<LogLap>> allLapsByPilot) {
     SortedSet<LogLap> list = new TreeSet<>(Comparator.comparing(LogLap::getHourLog));
@@ -80,13 +80,30 @@ public class KartRaceUtils {
     return average.getAverage();
   }
 
-  public static LocalTime calcTotalTimeRace(List<LogLap> listLogs) {
-    SortedSet<LogLap> sortedSet = new TreeSet<>(Comparator.comparing(LogLap::getHourLog));
-    sortedSet.addAll(listLogs);
+  public static Map<String, Double> calcAverageSpeedyInRaceByPilot(Map<String, SortedSet<LogLap>> listLogs) {
+    Map<String, Double> map = new HashMap<>();
 
-    LocalTime timeStart = LocalTime.ofNanoOfDay(ChronoUnit.NANOS.between(sortedSet.first().getLapTime(), sortedSet.first().getHourLog()));
-    LocalTime timeFinish = sortedSet.last().getHourLog();
+    listLogs.forEach((pilotId, logLaps) -> {
+      DoubleSummaryStatistics average = logLaps.stream().collect(Collectors.summarizingDouble(LogLap::getAverageSpeed));
 
-    return LocalTime.ofNanoOfDay(ChronoUnit.NANOS.between(timeStart, timeFinish));
+      map.put(pilotId, average.getAverage());
+    });
+    return map;
+  }
+
+  public static Map<String, LocalTime> calcTotalTimeRaceByPilots(Map<String, SortedSet<LogLap>> allLapsByPilot) {
+    Map<String, LocalTime> map = new HashMap<>();
+
+    allLapsByPilot.forEach((id, logLaps) -> {
+      SortedSet<LogLap> sortedSet = new TreeSet<>(Comparator.comparing(LogLap::getHourLog));
+      sortedSet.addAll(logLaps);
+
+      LocalTime timeStart = LocalTime.ofNanoOfDay(ChronoUnit.NANOS.between(sortedSet.first().getLapTime(), sortedSet.first().getHourLog()));
+      LocalTime timeFinish = sortedSet.last().getHourLog();
+
+      map.put(id, LocalTime.ofNanoOfDay(ChronoUnit.NANOS.between(timeStart, timeFinish)));
+    });
+
+    return map;
   }
 }

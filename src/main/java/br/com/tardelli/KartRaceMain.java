@@ -1,5 +1,6 @@
 package br.com.tardelli;
 
+import br.com.tardelli.dto.FinalResultsDTO;
 import br.com.tardelli.model.LogLap;
 import br.com.tardelli.service.KartRaceService;
 import br.com.tardelli.utils.file.FlatFileParser;
@@ -7,35 +8,33 @@ import br.com.tardelli.utils.file.FlatFileParser;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class KartRaceMain {
-
-  private static KartRaceService kartRaceService = new KartRaceService();
-  private static FlatFileParser flatFileParser = new FlatFileParser();
 
   @SuppressWarnings("ConstantConditions")
   public static void main(String[] args) {
     BufferedReader fileLogs = new BufferedReader(new InputStreamReader(KartRaceMain.class.getClassLoader().getResourceAsStream("logs")));
 
+    KartRaceService kartRaceService = new KartRaceService();
+    FlatFileParser flatFileParser = new FlatFileParser();
 
     List<LogLap> logLaps = flatFileParser.fileToObject(fileLogs);
 
-    List<LogLap> finalGrid = kartRaceService.buildGridFinal(logLaps);
-    LogLap bestLapRace = kartRaceService.findBestLapRace(finalGrid);
+    List<FinalResultsDTO> finalGrid = kartRaceService.buildGridFinal(logLaps);
 
-    printResult(finalGrid, bestLapRace);
+    printResult(finalGrid);
   }
 
-  private static void printResult(List<LogLap> finalGrid, LogLap bestRoundRace) {
+  private static void printResult(List<FinalResultsDTO> finalGrid) {
     System.out.println("\n*** RESULTADO FINAL *** \n");
-    AtomicInteger position = new AtomicInteger(1);
-    finalGrid.forEach(logLapDTO -> {
-      System.out.println(position + " - " + logLapDTO);
-      position.getAndIncrement();
-    });
+    finalGrid.forEach(System.out::println);
 
+
+    LogLap bestLapRace = finalGrid.get(0).getBestLapRace();
     System.out.println("\n*** MELHOR VOLTA DA CORRIDA ***");
-    System.out.println(bestRoundRace.getPilot().getId().concat("-").concat(bestRoundRace.getPilot().getName()).concat(" Tempo: ") + bestRoundRace.getBestLap() + "     Vel. média: " + bestRoundRace.getAverageSpeed());
+    System.out.println(bestLapRace.getPilot().getId().concat("-").concat(bestLapRace.getPilot().getName()).concat(" Tempo: ") + bestLapRace.getLapTime() + "     Vel. média: " + bestLapRace.getAverageSpeed());
   }
 }
