@@ -1,6 +1,5 @@
 package br.com.tardelli.model;
 
-import java.math.BigDecimal;
 import java.time.LocalTime;
 
 public class LogLap {
@@ -9,12 +8,7 @@ public class LogLap {
   private Pilot pilot;
   private Integer lapNumber;
   private LocalTime lapTime;
-  private BigDecimal averageSpeed;
-
-  private String hourFinishRace;
-  private LocalTime bestLap;
-  private BigDecimal averageRaceSpeedy;
-  private String totalTimeRace;
+  private Double averageSpeed;
 
   public Pilot getPilot() {
     return pilot;
@@ -48,49 +42,12 @@ public class LogLap {
     this.lapTime = lapTime;
   }
 
-  public BigDecimal getAverageSpeed() {
+  public Double getAverageSpeed() {
     return averageSpeed;
   }
 
-  public void setAverageSpeed(BigDecimal averageSpeed) {
+  public void setAverageSpeed(Double averageSpeed) {
     this.averageSpeed = averageSpeed;
   }
 
-  public String getHourFinishRace() {
-    return hourFinishRace;
-  }
-
-  public void setHourFinishRace(String hourFinishRace) {
-    this.hourFinishRace = hourFinishRace;
-  }
-
-  public LocalTime getBestLap() {
-    return bestLap;
-  }
-
-  public void setBestLap(LocalTime bestLap) {
-    this.bestLap = bestLap;
-  }
-
-  public BigDecimal getAverageRaceSpeedy() {
-    return averageRaceSpeedy;
-  }
-
-  public void setAverageRaceSpeedy(BigDecimal averageRaceSpeedy) {
-    this.averageRaceSpeedy = averageRaceSpeedy;
-  }
-
-  public String getTotalTimeRace() {
-    return totalTimeRace;
-  }
-
-  public void setTotalTimeRace(String totalTimeRace) {
-    this.totalTimeRace = totalTimeRace;
-  }
-
-  @Override
-  public String toString() {
-    return pilot.getId() + "-" + pilot.getName() + " " + lapNumber + " voltas completas    Tempo total: " + totalTimeRace
-            + "    Melhor volta: " + bestLap + "    Vel. Média: " + averageRaceSpeedy + "    Termino: " + (hourFinishRace == null ? "" : hourFinishRace);
-  }
 }
