@@ -72,6 +72,25 @@ public class KartRaceUtilsTest {
     Assert.assertEquals(averageSpeedyInRace, new Double("60.05"));
   }
 
+  @Test
+  public void calcAverageSpeedyInRaceByPilot(){
+    Map<String, SortedSet<LogLap>> lapsByPilot = KartRaceUtils.getLapsByPilotOrderByLapNumberAsc(getLogLapsMock());
+
+    Map<String, Double> map = KartRaceUtils.calcAverageSpeedyInRaceByPilot(lapsByPilot);
+
+    map.forEach((s, averageSpeedyInRace) -> Assert.assertEquals(averageSpeedyInRace, new Double("60.05")));
+  }
+
+  @Test
+  public void calcTotalTimeRaceByPilots(){
+    Map<String, SortedSet<LogLap>> lapsByPilot = KartRaceUtils.getLapsByPilotOrderByLapNumberAsc(getLogLapsMock());
+
+    Map<String, LocalTime> map = KartRaceUtils.calcTotalTimeRaceByPilots(lapsByPilot);
+
+    Assert.assertEquals(map.get("001"), LocalTime.parse("00:04:06.241"));
+    Assert.assertEquals(map.get("002"), LocalTime.parse("00:06:01.241"));
+  }
+
   private List<LogLap> getLogLapsMock() {
     List<LogLap> list = new ArrayList<>();
     Pilot pilot1 = new Pilot("001", "Pilot 1"); //Pilot 1 is champion
